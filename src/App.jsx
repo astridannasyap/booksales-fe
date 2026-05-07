@@ -1,4 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { RequireAdmin, RequireAuth } from './components/ProtectedRoute'
+import MyTransactions from './pages/customer/transactions'
 import Home from './pages/public'
 import PublicLayout from './layouts/public'
 import Books from './pages/public/books'
@@ -27,19 +29,27 @@ function App() {
             <Route index element={<Books />} />
             <Route path='show/:id' element={<ShowBook />} />
           </Route>
+          <Route path='my-transactions' element={
+            <RequireAuth>
+              <MyTransactions />
+            </RequireAuth>
+          } />
 
-          {/* Auth */}
           <Route path='login' element={<Login />} />
           <Route path='register' element={<Register />} />
 
-          {/* Admin */}
-          <Route path='admin' element={<AdminLayout />}>
+          {/* Admin — wajib login + role admin */}
+          <Route path='admin' element={
+            <RequireAdmin>
+              <AdminLayout />
+            </RequireAdmin>
+          }>
             <Route index element={<Dashboard />} />
 
             <Route path='books'>
               <Route index element={<AdminBooks />} />
               <Route path='create' element={<BookCreate />} />
-              <Route path='edit/:id' element={<BookEdit />} />  
+              <Route path='edit/:id' element={<BookEdit />} />
             </Route>
 
             <Route path='genres'>
@@ -52,14 +62,14 @@ function App() {
               <Route index element={<AdminAuthors />} />
               <Route path='create' element={<AuthorCreate />} />
               <Route path="/admin/authors/edit/:id" element={<AuthorEdit />} />
-
             </Route>
-
           </Route>
+
         </Route>
       </Routes>
     </BrowserRouter>
   )
 }
+
 
 export default App
